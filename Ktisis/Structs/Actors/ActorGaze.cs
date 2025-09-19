@@ -1,6 +1,8 @@
 using System.Numerics;
 using System.Runtime.InteropServices;
 
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
+
 namespace Ktisis.Structs.Actors;
 
 [StructLayout(LayoutKind.Sequential)]
@@ -49,7 +51,8 @@ public struct ActorGaze {
 [StructLayout(LayoutKind.Explicit, Size = 0x28)]
 public struct Gaze {
     [FieldOffset(0x08)] public GazeMode Mode; // 0 or 3
-    [FieldOffset(0x10)] public Vector3 Pos;
+    [FieldOffset(0x10)] public Vector3 Pos; // holds vector3 when mode is 3
+    [FieldOffset(0x10)] public GameObjectId TargetId; // holds GameObjectId when mode is 1
     [FieldOffset(0x20)] public uint Unk5;
 }
 
@@ -67,7 +70,7 @@ public enum GazeControl {
 
 public enum GazeMode : uint {
     Disabled = 0,
-    Freeze = 1,
+    Object = 1,
     Rotate = 2,
     Target = 3,
 

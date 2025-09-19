@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
+using System.Linq;
 
 using Dalamud.Interface;
 using Dalamud.Interface.Utility.Raii;
@@ -17,6 +18,7 @@ using Ktisis.Scene.Entities;
 using Ktisis.Scene.Entities.Game;
 using Ktisis.Scene.Entities.Skeleton;
 using Ktisis.Structs.Actors;
+using Ktisis.Interface.Editor.Popup;
 
 namespace Ktisis.Interface.Editor.Properties;
 
@@ -24,6 +26,7 @@ public class ActorPropertyList : ObjectPropertyList {
 	private readonly IEditorContext _ctx;
 	private readonly ConfigManager _cfg;
 	private readonly LocaleManager _locale;
+	private readonly GuiManager _gui;
 	private static Dictionary<GazeControl, TransformTable>? GazeTables;
 
 	private bool IsLinked {
@@ -34,11 +37,13 @@ public class ActorPropertyList : ObjectPropertyList {
 	public ActorPropertyList(
 		IEditorContext ctx,
 		ConfigManager cfg,
-		LocaleManager locale
+		LocaleManager locale,
+		GuiManager gui
 	) {
 		this._ctx = ctx;
 		this._cfg = cfg;
 		this._locale = locale;
+		this._gui = gui;
 	}
 	
 	public override void Invoke(IPropertyListBuilder builder, SceneEntity entity) {
@@ -102,6 +107,7 @@ public class ActorPropertyList : ObjectPropertyList {
 		var result = false;
 
 		using (ImRaii.Disabled(this._ctx.Posing.IsEnabled)) {
+			result |= DrawActorTargeting(actor);
 			if (isHuman) {
 				var icon = IsLinked ? FontAwesomeIcon.Link : FontAwesomeIcon.Unlink;
 				if (Buttons.IconButton(icon)) {
@@ -132,8 +138,10 @@ public class ActorPropertyList : ObjectPropertyList {
 				result |= DrawGaze(actor, ref gaze.Torso.Gaze, GazeControl.Torso);
 			}
 
-			if (result)
+			if (result) {
+				Ktisis.Log.Info($"resetting gaze: {gaze}");
 				actor.Gaze = gaze;
+			}
 		}
 
 		return;
@@ -194,5 +202,51 @@ public class ActorPropertyList : ObjectPropertyList {
 		result |= GazeTables[type].DrawPosition(ref gaze.Pos, TransformTableFlags.UseAvailable);
 
 		return result;
+	}
+
+	private unsafe bool DrawActorTargeting(ActorEntity actor) {
+		// 1. select button to choose entities in scene to set to target (or null target)
+		// 2. show current target if one is set
+
+		var spacing = ImGui.GetStyle().ItemInnerSpacing.X;
+		var result = false;
+
+		// grab an arbitrary basegaze from the 3 defaults, since all will be targeting the same obj if any
+		var actorCharacter = (CharacterEx*)actor.Character;
+		var baseGaze = actorCharacter->Gaze[GazeControl.Torso];
+		var hasTarget = baseGaze.Mode == GazeMode.Object
+			&& baseGaze.TargetId.Type > 0
+			&& baseGaze.TargetId.ObjectId >= 201
+			&& baseGaze.TargetId.ObjectId <= 243;
+
+		// todo: enable target when none existed pre-gpose?
+		using (ImRaii.Disabled(!hasTarget)) {
+			// try to derive an entity in the scene that we're targeting
+			ActorEntity? targetEntity = null;
+			if (hasTarget) {
+				var targetId = baseGaze.TargetId.ObjectId;
+				var currentActors = this._ctx.Scene.Children
+					.OfType<ActorEntity>()
+					.ToList();
+				foreach (ActorEntity ent in currentActors) {
+					if (ent.Actor.ObjectIndex == targetId)
+						targetEntity = ent;
+				}
+			}
+
+			// button
+			if (Buttons.IconButtonTooltip(FontAwesomeIcon.Users, "Select target actor"))
+				this._gui.CreatePopup<ActorGazeTargetPopup>(this._ctx, actor).Open();
+
+			// label
+			ImGui.AlignTextToFramePadding();
+			var label = "No Actor Target";
+			if (hasTarget)
+				label = $"Targeting: {(targetEntity != null ? targetEntity.Name : "Unknown")}";
+			ImGui.SameLine(0, spacing);
+			ImGui.Text(label);
+
+			return result;
+		}
 	}
 }
