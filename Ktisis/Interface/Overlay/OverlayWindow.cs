@@ -13,6 +13,9 @@ using Ktisis.ImGuizmo;
 using Ktisis.Interface.Types;
 using Ktisis.Services.Game;
 
+using Ktisis.Structs.Actors;
+using Ktisis.Scene.Entities.Game;
+
 namespace Ktisis.Interface.Overlay;
 
 public class OverlayWindow : KtisisWindow {
@@ -57,14 +60,14 @@ public class OverlayWindow : KtisisWindow {
 	public override void Draw() {
 		if (!this._ctx.Config.Overlay.Visible) return;
 		
-		//var t = new Stopwatch();
-		//t.Start();
+		var t = new Stopwatch();
+		t.Start();
 		
 		var gizmo = this.DrawGizmo();
 		this._sceneDraw.DrawScene(gizmo: gizmo, gizmoIsEnded: this._gizmo.IsEnded);
 		
-		//t.Stop();
-		//this.DrawDebug(t);
+		t.Stop();
+		this.DrawDebug(t);
 	}
 
 	private bool DrawGizmo() {
@@ -121,7 +124,7 @@ public class OverlayWindow : KtisisWindow {
 		return true;
 	}
 
-	private void DrawDebug(Stopwatch t) {
+	private unsafe void DrawDebug(Stopwatch t) {
 		ImGui.SetCursorPosY(ImGui.GetStyle().WindowPadding.Y);
 		for (var i = 0; i < 5; i++)
 			ImGui.Spacing();
@@ -133,5 +136,16 @@ public class OverlayWindow : KtisisWindow {
 		ImGui.Text($"Target: {target?.GetHashCode() ?? 0:X7} {target?.GetType().Name ?? "NULL"} ({target?.Targets?.Count() ?? 0}, {target?.Primary?.Name ?? "NULL"})");
 		var history = this._ctx.Actions.History;
 		ImGui.Text($"History: {history.Count} ({history.CanUndo}, {history.CanRedo})");
+		var selected = this._ctx.Selection.GetFirstSelected();
+		if (selected is ActorEntity actorEntity) {
+			var actorCharacter = (CharacterEx*)actorEntity.Character;
+			var baseGaze = actorCharacter->Gaze[GazeControl.Torso];
+			var gaze = actorEntity.Gaze != null ? (ActorGaze)actorEntity.Gaze : new ActorGaze();
+			ImGui.Text($"Selected Actor: {actorEntity.Name}");
+			ImGui.Text($"\tEyes Mode: {actorCharacter->Gaze[GazeControl.Eyes].Mode}, Pos: {actorCharacter->Gaze[GazeControl.Eyes].Pos}, TargetId: {actorCharacter->Gaze[GazeControl.Eyes].TargetId.ObjectId}, Type: {actorCharacter->Gaze[GazeControl.Eyes].TargetId.Type}");
+			ImGui.Text($"\tHead Mode: {actorCharacter->Gaze[GazeControl.Head].Mode}, Pos: {actorCharacter->Gaze[GazeControl.Head].Pos}, TargetId: {actorCharacter->Gaze[GazeControl.Head].TargetId.ObjectId}, Type: {actorCharacter->Gaze[GazeControl.Head].TargetId.Type}");
+			ImGui.Text($"\tTorso Mode: {actorCharacter->Gaze[GazeControl.Torso].Mode}, Pos: {actorCharacter->Gaze[GazeControl.Torso].Pos}, TargetId: {actorCharacter->Gaze[GazeControl.Torso].TargetId.ObjectId}, Type: {actorCharacter->Gaze[GazeControl.Torso].TargetId.Type}");
+			// ImGui.Text($"\tOther Mode: {actorCharacter->Gaze[GazeControl.Torso].Mode}, Pos: {actorCharacter->Gaze[GazeControl.Torso].Pos}, TargetId: {actorCharacter->Gaze[GazeControl.Torso].TargetId.ObjectId}, Type: {actorCharacter->Gaze[GazeControl.Torso].TargetId.Type}");
+		}
 	}
 }

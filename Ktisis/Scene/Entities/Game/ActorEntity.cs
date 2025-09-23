@@ -220,6 +220,25 @@ public class ActorEntity : CharaEntity, IDeletable {
 		return true;
 	}
 
+	public unsafe void SetActorGazeTarget(ActorEntity? otherActor) {
+		if (this.Gaze == null) this.Gaze = new ActorGaze();
+		var gaze = (ActorGaze)this.Gaze;
+		if (this.Actor.IsPcCharacter())
+			this.Character->SetTargetId(otherActor.CsGameObject->GetGameObjectId());
+
+		for (var i = 0; i < 3; i++) {
+			var type = (GazeControl)i;
+			var ctrl = gaze[type];
+			ctrl.Mode = GazeMode.Object;
+			if (otherActor != null)
+				ctrl.TargetId = otherActor.CsGameObject->GetGameObjectId();
+			else
+				ctrl.TargetId = 0;
+			gaze[type] = ctrl;
+		}
+		this.Gaze = gaze;
+	}
+
 	private void CheckImplicitlyEnabled()
 	{
 		var notEnabled = this.Scene.Context.Config.Presets.Presets.Where(kvp => this._presetStates.GetValueOrDefault(kvp.Key, PresetState.Disabled) != PresetState.Enabled).ToDictionary();
