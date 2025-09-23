@@ -223,6 +223,8 @@ public class ActorEntity : CharaEntity, IDeletable {
 	public unsafe void SetActorGazeTarget(ActorEntity? otherActor) {
 		if (this.Gaze == null) this.Gaze = new ActorGaze();
 		var gaze = (ActorGaze)this.Gaze;
+		if (this.Actor.IsPcCharacter())
+			this.Character->SetTargetId(otherActor.CsGameObject->GetGameObjectId());
 
 		for (var i = 0; i < 3; i++) {
 			var type = (GazeControl)i;

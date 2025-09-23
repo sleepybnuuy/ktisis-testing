@@ -124,7 +124,7 @@ public class OverlayWindow : KtisisWindow {
 		return true;
 	}
 
-	private void DrawDebug(Stopwatch t) {
+	private unsafe void DrawDebug(Stopwatch t) {
 		ImGui.SetCursorPosY(ImGui.GetStyle().WindowPadding.Y);
 		for (var i = 0; i < 5; i++)
 			ImGui.Spacing();
@@ -138,12 +138,14 @@ public class OverlayWindow : KtisisWindow {
 		ImGui.Text($"History: {history.Count} ({history.CanUndo}, {history.CanRedo})");
 		var selected = this._ctx.Selection.GetFirstSelected();
 		if (selected is ActorEntity actorEntity) {
+			var actorCharacter = (CharacterEx*)actorEntity.Character;
+			var baseGaze = actorCharacter->Gaze[GazeControl.Torso];
 			var gaze = actorEntity.Gaze != null ? (ActorGaze)actorEntity.Gaze : new ActorGaze();
 			ImGui.Text($"Selected Actor: {actorEntity.Name}");
-			ImGui.Text($"\tEyes Mode: {gaze.Eyes.Gaze.Mode}, Pos: {gaze.Eyes.Gaze.Pos}, TargetId: {gaze.Eyes.Gaze.TargetId.ObjectId}, Type: {gaze.Eyes.Gaze.TargetId.Type}");
-			ImGui.Text($"\tHead Mode: {gaze.Head.Gaze.Mode}, Pos: {gaze.Head.Gaze.Pos}, TargetId: {gaze.Head.Gaze.TargetId.ObjectId}, Type: {gaze.Head.Gaze.TargetId.Type}");
-			ImGui.Text($"\tTorso Mode: {gaze.Torso.Gaze.Mode}, Pos: {gaze.Torso.Gaze.Pos}, TargetId: {gaze.Torso.Gaze.TargetId.ObjectId}, Type: {gaze.Torso.Gaze.TargetId.Type}");
-			ImGui.Text($"\tOther Mode: {gaze.Other.Gaze.Mode}, Pos: {gaze.Other.Gaze.Pos}, TargetId: {gaze.Other.Gaze.TargetId.ObjectId}, Type: {gaze.Other.Gaze.TargetId.Type}");
+			ImGui.Text($"\tEyes Mode: {actorCharacter->Gaze[GazeControl.Eyes].Mode}, Pos: {actorCharacter->Gaze[GazeControl.Eyes].Pos}, TargetId: {actorCharacter->Gaze[GazeControl.Eyes].TargetId.ObjectId}, Type: {actorCharacter->Gaze[GazeControl.Eyes].TargetId.Type}");
+			ImGui.Text($"\tHead Mode: {actorCharacter->Gaze[GazeControl.Head].Mode}, Pos: {actorCharacter->Gaze[GazeControl.Head].Pos}, TargetId: {actorCharacter->Gaze[GazeControl.Head].TargetId.ObjectId}, Type: {actorCharacter->Gaze[GazeControl.Head].TargetId.Type}");
+			ImGui.Text($"\tTorso Mode: {actorCharacter->Gaze[GazeControl.Torso].Mode}, Pos: {actorCharacter->Gaze[GazeControl.Torso].Pos}, TargetId: {actorCharacter->Gaze[GazeControl.Torso].TargetId.ObjectId}, Type: {actorCharacter->Gaze[GazeControl.Torso].TargetId.Type}");
+			// ImGui.Text($"\tOther Mode: {actorCharacter->Gaze[GazeControl.Torso].Mode}, Pos: {actorCharacter->Gaze[GazeControl.Torso].Pos}, TargetId: {actorCharacter->Gaze[GazeControl.Torso].TargetId.ObjectId}, Type: {actorCharacter->Gaze[GazeControl.Torso].TargetId.Type}");
 		}
 	}
 }

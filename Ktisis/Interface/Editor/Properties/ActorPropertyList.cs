@@ -219,34 +219,31 @@ public class ActorPropertyList : ObjectPropertyList {
 			&& baseGaze.TargetId.ObjectId >= 201
 			&& baseGaze.TargetId.ObjectId <= 243;
 
-		// todo: enable target when none existed pre-gpose?
-		using (ImRaii.Disabled(!hasTarget)) {
-			// try to derive an entity in the scene that we're targeting
-			ActorEntity? targetEntity = null;
-			if (hasTarget) {
-				var targetId = baseGaze.TargetId.ObjectId;
-				var currentActors = this._ctx.Scene.Children
-					.OfType<ActorEntity>()
-					.ToList();
-				foreach (ActorEntity ent in currentActors) {
-					if (ent.Actor.ObjectIndex == targetId)
-						targetEntity = ent;
-				}
+		// try to derive an entity in the scene that we're targeting
+		ActorEntity? targetEntity = null;
+		if (hasTarget) {
+			var targetId = baseGaze.TargetId.ObjectId;
+			var currentActors = this._ctx.Scene.Children
+				.OfType<ActorEntity>()
+				.ToList();
+			foreach (ActorEntity ent in currentActors) {
+				if (ent.Actor.ObjectIndex == targetId)
+					targetEntity = ent;
 			}
-
-			// button
-			if (Buttons.IconButtonTooltip(FontAwesomeIcon.Users, "Select target actor"))
-				this._gui.CreatePopup<ActorGazeTargetPopup>(this._ctx, actor).Open();
-
-			// label
-			ImGui.AlignTextToFramePadding();
-			var label = "No Actor Target";
-			if (hasTarget)
-				label = $"Targeting: {(targetEntity != null ? targetEntity.Name : "Unknown")}";
-			ImGui.SameLine(0, spacing);
-			ImGui.Text(label);
-
-			return result;
 		}
+
+		// button
+		if (Buttons.IconButtonTooltip(FontAwesomeIcon.Users, "Select target actor"))
+			this._gui.CreatePopup<ActorGazeTargetPopup>(this._ctx, actor).Open();
+
+		// label
+		ImGui.AlignTextToFramePadding();
+		var label = "No Actor Target";
+		if (hasTarget)
+			label = $"Targeting: {(targetEntity != null ? targetEntity.Name : "Unknown")}";
+		ImGui.SameLine(0, spacing);
+		ImGui.Text(label);
+
+		return result;
 	}
 }
