@@ -4,11 +4,13 @@ using Ktisis.Editor.Animation.Game;
 using Ktisis.Editor.Animation.Types;
 using Ktisis.Scene.Entities.Game;
 using Ktisis.Structs.Actors;
+using Ktisis.Editor.Context.Types;
 
 namespace Ktisis.Editor.Animation.Handlers;
 
 public class AnimationEditor(
 	IAnimationManager mgr,
+	IEditorContext ctx,
 	ActorEntity actor
 ) : IAnimationEditor {
 	private readonly static List<uint> IdlePoses = [ 0, 91, 92, 107, 108, 218, 219 ];
@@ -86,9 +88,11 @@ public class AnimationEditor(
 	
 	// Animations
 
-	public void PlayAnimation(GameAnimation animation, bool playStart = true) {
+	public unsafe void PlayAnimation(GameAnimation animation, bool playStart = true) {
 		switch (animation) {
 			case EmoteAnimation { Index: 0 } emote when playStart:
+				if (emote.IsExpression)
+					ctx.Posing.IsDoingExpression = true;
 				if (mgr.PlayEmote(actor, emote.EmoteId))
 					break;
 				goto default;
@@ -96,6 +100,13 @@ public class AnimationEditor(
 				mgr.PlayTimeline(actor, animation.TimelineId);
 				break;
 		}
+		if (ctx.Posing.IsDoingExpression) {
+			var characterBase = actor.GetCharacter();
+			var skel = characterBase->Skeleton;
+			var pose = skel->PartialSkeletons[1].GetHavokPose(0);
+			pose->SyncModelSpace();
+		}
+		ctx.Posing.IsDoingExpression = false;
 	}
 	
 	public void PlayTimeline(uint id) => mgr.PlayTimeline(actor, id);

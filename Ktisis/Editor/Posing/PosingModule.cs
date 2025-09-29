@@ -62,7 +62,7 @@ public sealed class PosingModule : HookModule {
 	private unsafe delegate void SyncModelSpaceDelegate(hkaPose* pose);
 
 	private unsafe void SyncModelSpace(hkaPose* pose) {
-		if (this.Manager.IsSolvingIk)
+		if (this.Manager.IsSolvingIk || this.Manager.IsDoingExpression)
 			this._syncModelSpaceHook.Original(pose);
 		
 		// do nothing
