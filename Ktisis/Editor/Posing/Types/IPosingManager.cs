@@ -25,6 +25,8 @@ public interface IPosingManager : IDisposable {
 	public void Initialize();
 
 	public bool IsEnabled { get; }
+	public bool IsSolvingIk { get; set; }
+	public bool IsDoingExpression { get; set; }
 	public void SetEnabled(bool enable);
 
 	public IIkController CreateIkController();
