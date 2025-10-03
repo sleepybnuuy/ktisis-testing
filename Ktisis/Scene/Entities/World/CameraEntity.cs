@@ -29,6 +29,7 @@ public class CameraEntity : WorldEntity, IDeletable {
 		base.SetTransform(trans);
         Camera.FixedPosition = base.GetTransform().Position;
         Camera.WritePosition();
+		// Camera.WriteRotation();
 	}
 
 	public bool Delete() {

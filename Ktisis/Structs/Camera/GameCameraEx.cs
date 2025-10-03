@@ -20,6 +20,13 @@ public struct GameCameraEx {
 	[FieldOffset(0x12C)] public float DistanceMax;
 	[FieldOffset(0x13C)] public float Zoom;
 	[FieldOffset(0x140)] public Vector2 Angle;
+
+	// horizontal coordinates system (az/el)
+	// DirH = azimuth; 0=north, 90=east, etc
+	// DirV = elevation; 0=horizontal, + up - down
+	[FieldOffset(0x140)] public float DirH;
+	[FieldOffset(0x144)] public float DirV;
+
 	[FieldOffset(0x15C)] public float YMin;
 	[FieldOffset(0x158)] public float YMax;
 	[FieldOffset(0x160)] public Vector2 Pan;

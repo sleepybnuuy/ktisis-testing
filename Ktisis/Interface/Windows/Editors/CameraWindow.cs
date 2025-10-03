@@ -1,3 +1,5 @@
+using System.Numerics;
+
 using Dalamud.Interface;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Bindings.ImGui;
@@ -187,9 +189,15 @@ public class CameraWindow : EntityEditWindow<CameraEntity> {
 		ImGui.SameLine(0, spacing);
 		ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
 
-		var angleDeg = ptr->Angle * MathHelpers.Rad2Deg;
-		if (ImGui.DragFloat2("##CameraAngle", ref angleDeg, 0.25f))
-			ptr->Angle = angleDeg * MathHelpers.Deg2Rad;
+		// var angleDeg = ptr->Angle * MathHelpers.Rad2Deg;
+		// if (ImGui.DragFloat2("##CameraAngle", ref angleDeg, 0.25f))
+		// 	ptr->Angle = angleDeg * MathHelpers.Deg2Rad;
+		var azEl = new Vector2(ptr->DirH, ptr->DirV);
+		if (ImGui.DragFloat2("##CameraAzEl", ref azEl, 0.25f)) {
+			ptr->DirH = azEl.X;
+			ptr->DirV = azEl.Y;
+		}
+
 
 		// Camera pan
 		

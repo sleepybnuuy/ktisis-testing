@@ -62,6 +62,15 @@ public class EditorCamera {
 		if (renderCam != null && this.IsOrthographic)
 			renderCam->OrthographicZoom = this.OrthographicZoom;
 	}
+
+	public unsafe void WriteRotation() {
+		// use to load a gamecamera with scenecamera rotation values set by gizmo manipulation
+		var camera = this.GameCamera;
+		if (camera == null) return;
+
+		var sceneCam = &camera->CameraBase.SceneCamera;
+		var newRot = sceneCam->Object.Rotation;
+	}
 	
 	public unsafe void SetDelimited(bool delimit) {
 		if (delimit)
