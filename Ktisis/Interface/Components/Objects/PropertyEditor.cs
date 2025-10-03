@@ -36,7 +36,8 @@ public class PropertyEditor {
 			.Create<LightPropertyList>()
 			.Create<ImagePropertyList>(ctx)
 			.Create<WeaponPropertyList>()
-			.Create<PresetPropertyList>(ctx);
+			.Create<PresetPropertyList>(ctx)
+			.Create<CameraPropertyList>(ctx, gui);
 	}
 
 	private PropertyEditor Create<T>(params object[] parameters) where T : ObjectPropertyList {
