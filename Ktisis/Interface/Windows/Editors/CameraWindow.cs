@@ -78,26 +78,6 @@ public class CameraWindow : EntityEditWindow<CameraEntity> {
 		ImGui.Spacing();
 		this.DrawSliders(camera);
 	}
-
-	public void DrawEmbed(CameraEntity entity) {
-		var camera = entity.Camera;
-		if (camera is not { IsValid: true }) return;
-
-		this.DrawToggles(camera);
-		ImGui.Spacing();
-		ImGui.Separator();
-		ImGui.Spacing();
-
-		this.DrawOrbitTarget(camera);
-		ImGui.Spacing();
-		this.DrawFixedPosition(camera);
-		this.DrawRelativeOffset(camera);
-		ImGui.Spacing();
-		this.DrawAnglePan(camera);
-
-		ImGui.Spacing();
-		this.DrawSliders(camera);
-	}
 	
 	// Toggles
 
