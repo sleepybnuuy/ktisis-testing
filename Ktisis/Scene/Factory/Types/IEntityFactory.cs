@@ -11,6 +11,7 @@ public interface IEntityFactory {
 	public ILightBuilder BuildLight();
 	public IObjectBuilder BuildObject();
 	public IPoseBuilder BuildPose();
+	public ICameraBuilder BuildCamera();
 
 	public IActorCreator CreateActor();
 	public ILightCreator CreateLight();
