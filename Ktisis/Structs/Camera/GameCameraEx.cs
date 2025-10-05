@@ -26,6 +26,10 @@ public struct GameCameraEx {
 	// DirV = elevation; 0=horizontal, + up - down
 	[FieldOffset(0x140)] public float DirH;
 	[FieldOffset(0x144)] public float DirV;
+	[FieldOffset(0x148)] public float InputDeltaHAdjusted;
+	[FieldOffset(0x14C)] public float InputDeltaVAdjusted;
+	[FieldOffset(0x150)] public float InputDeltaH;
+	[FieldOffset(0x154)] public float InputDeltaV;
 
 	[FieldOffset(0x15C)] public float YMin;
 	[FieldOffset(0x158)] public float YMax;

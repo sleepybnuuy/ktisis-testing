@@ -193,9 +193,21 @@ public class CameraWindow : EntityEditWindow<CameraEntity> {
 		// if (ImGui.DragFloat2("##CameraAngle", ref angleDeg, 0.25f))
 		// 	ptr->Angle = angleDeg * MathHelpers.Deg2Rad;
 		var azEl = new Vector2(ptr->DirH, ptr->DirV);
-		if (ImGui.DragFloat2("##CameraAzEl", ref azEl, 0.25f)) {
+		if (ImGui.DragFloat2("##CameraAzEl", ref azEl, 0.01f)) {
 			ptr->DirH = azEl.X;
 			ptr->DirV = azEl.Y;
+		}
+		ImGui.Spacing();
+		var adjustedDelta = new Vector2(ptr->InputDeltaHAdjusted, ptr->InputDeltaVAdjusted);
+		if (ImGui.DragFloat2("##CameraAzElDeltaAdjusted", ref adjustedDelta, 0.01f)) {
+			// ptr->InputDeltaH = ptr->DirH - azEl.X;
+			// ptr->InputDeltaV = ptr->DirV - azEl.Y;
+		}
+		ImGui.Spacing();
+		var delta = new Vector2(ptr->InputDeltaH, ptr->InputDeltaV);
+		if (ImGui.DragFloat2("##CameraAzElDelta", ref delta, 0.01f)) {
+			// ptr->InputDeltaH = ptr->DirH - azEl.X;
+			// ptr->InputDeltaV = ptr->DirV - azEl.Y;
 		}
 
 
