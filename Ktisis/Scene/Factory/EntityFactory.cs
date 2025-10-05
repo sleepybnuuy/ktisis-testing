@@ -35,6 +35,8 @@ public class EntityFactory : IEntityFactory {
 	public IPoseBuilder BuildPose() => new PoseBuilder(this.Scene);
 	
 	public IRefImageBuilder BuildRefImage() => new RefImageBuilder(this.Scene);
+
+	public ICameraBuilder BuildCamera() => new CameraBuilder(this.Scene);
 	
 	// Creators
 

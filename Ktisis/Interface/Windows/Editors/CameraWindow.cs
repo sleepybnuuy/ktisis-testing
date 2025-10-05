@@ -1,3 +1,5 @@
+using System.Numerics;
+
 using Dalamud.Interface;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Bindings.ImGui;
@@ -14,11 +16,11 @@ using Ktisis.Editor.Context.Types;
 using Ktisis.Interface.Components.Objects;
 using Ktisis.Interface.Components.Transforms;
 using Ktisis.Interface.Types;
+using Ktisis.Scene.Entities.World;
 
-namespace Ktisis.Interface.Windows;
+namespace Ktisis.Interface.Windows.Editors;
 
-public class CameraWindow : KtisisWindow {
-	private readonly IEditorContext _ctx;
+public class CameraWindow : EntityEditWindow<CameraEntity> {
 
 	private readonly TransformTable _fixedPos;
 	private readonly TransformTable _relativePos;
@@ -29,10 +31,7 @@ public class CameraWindow : KtisisWindow {
 		IEditorContext ctx,
 		TransformTable fixedPos,
 		TransformTable relativePos
-	) : base(
-		$"Camera Editor###{WindowId}"
-	) {
-		this._ctx = ctx;
+	) : base($"Camera Editor###{WindowId}", ctx) {
 		this._fixedPos = fixedPos;
 		this._relativePos = relativePos;
 	}
@@ -40,7 +39,7 @@ public class CameraWindow : KtisisWindow {
 	private const TransformTableFlags TransformFlags = TransformTableFlags.Default | TransformTableFlags.UseAvailable & ~TransformTableFlags.Operation;
 
 	public override void PreOpenCheck() {
-		if (this._ctx is { IsValid: true, Cameras.Current: not null }) return;
+		if (this.Context is { IsValid: true, Cameras.Current: not null }) return;
 		Ktisis.Log.Verbose("State for camera window is stale, closing.");
 		this.Close();
 	}
@@ -51,12 +50,12 @@ public class CameraWindow : KtisisWindow {
 			MinimumSize = new(TransformTable.CalcWidth(), 300.0f),
 			MaximumSize = ImGui.GetIO().DisplaySize * 0.75f
 		};
-		IsWork = this._ctx.Cameras.IsWorkCameraActive;
+		IsWork = this.Context.Cameras.IsWorkCameraActive;
 		this.WindowName = $"Camera Editor{(IsWork ? " [Work Camera]" : "")}###{WindowId}";
 	}
 	
 	public override void Draw() {
-		var camera = this._ctx.Cameras.Current;
+		var camera = this.Context.Cameras.Current;
 		if (camera is not { IsValid: true }) return;
 
 		this.DrawToggles(camera);
@@ -87,14 +86,14 @@ public class CameraWindow : KtisisWindow {
 	private void DrawToggles(EditorCamera camera) {
 		var collide = !camera.Flags.HasFlag(CameraFlags.NoCollide) && !IsWork;
 		using (ImRaii.Disabled(IsWork)) {
-			if (ImGui.Checkbox(this._ctx.Locale.Translate("camera_edit.toggles.collide"), ref collide))
+			if (ImGui.Checkbox(this.Context.Locale.Translate("camera_edit.toggles.collide"), ref collide))
 				camera.Flags ^= CameraFlags.NoCollide;
 		}
 		
 		ImGui.SameLine();
 		
 		var delimit = camera.Flags.HasFlag(CameraFlags.Delimit);
-		if (ImGui.Checkbox(this._ctx.Locale.Translate("camera_edit.toggles.delimit"), ref delimit))
+		if (ImGui.Checkbox(this.Context.Locale.Translate("camera_edit.toggles.delimit"), ref delimit))
 			camera.SetDelimited(delimit);
 		
 		this.DrawOrthographicToggle(camera);
@@ -106,7 +105,7 @@ public class CameraWindow : KtisisWindow {
 		
 		ImGui.SameLine();
 		var enabled = camera.IsOrthographic;
-		if (ImGui.Checkbox(this._ctx.Locale.Translate("camera_edit.toggles.ortho"), ref enabled))
+		if (ImGui.Checkbox(this.Context.Locale.Translate("camera_edit.toggles.ortho"), ref enabled))
 			camera.SetOrthographic(enabled);
 	}
 	
@@ -115,20 +114,20 @@ public class CameraWindow : KtisisWindow {
 	private unsafe void DrawOrbitTarget(EditorCamera camera) {
 		using var _ = ImRaii.PushId("CameraOrbitTarget");
 		
-		var target = this._ctx.Cameras.ResolveOrbitTarget(camera);
+		var target = this.Context.Cameras.ResolveOrbitTarget(camera);
 		if (target == null) return;
 
 		var isFixed = camera.OrbitTarget != null;
 		var lockIcon = isFixed ? FontAwesomeIcon.Lock : FontAwesomeIcon.Unlock;
 		var lockHint = isFixed
-			? this._ctx.Locale.Translate("camera_edit.orbit.unlock")
-			: this._ctx.Locale.Translate("camera_edit.orbit.lock");
+			? this.Context.Locale.Translate("camera_edit.orbit.unlock")
+			: this.Context.Locale.Translate("camera_edit.orbit.lock");
 		if (Buttons.IconButtonTooltip(lockIcon, lockHint))
 			camera.OrbitTarget = isFixed ? null : target.ObjectIndex;
 
 		ImGui.SameLine();
 
-		var text = $"Orbiting: {target.GetNameOrFallback(this._ctx)}";
+		var text = $"Orbiting: {target.GetNameOrFallback(this.Context)}";
 		if (isFixed)
 			ImGui.Text(text);
 		else
@@ -136,7 +135,7 @@ public class CameraWindow : KtisisWindow {
 		
 		ImGui.SameLine();
 		ImGui.SetCursorPosX(ImGui.GetCursorPosX() + ImGui.GetContentRegionAvail().X - Buttons.CalcSize());
-		if (Buttons.IconButtonTooltip(FontAwesomeIcon.Sync, this._ctx.Locale.Translate("camera_edit.offset.to_target"))) {
+		if (Buttons.IconButtonTooltip(FontAwesomeIcon.Sync, this.Context.Locale.Translate("camera_edit.offset.to_target"))) {
 			var gameObject = (GameObject*)target.Address;
 			var drawObject = gameObject->DrawObject;
 			if (drawObject != null)
@@ -160,8 +159,8 @@ public class CameraWindow : KtisisWindow {
 		
 		var lockIcon = isFixed ? FontAwesomeIcon.Lock : FontAwesomeIcon.Unlock;
 		var lockHint = isFixed
-			? this._ctx.Locale.Translate("camera_edit.position.unlock")
-			: this._ctx.Locale.Translate("camera_edit.position.lock");
+			? this.Context.Locale.Translate("camera_edit.position.unlock")
+			: this.Context.Locale.Translate("camera_edit.position.lock");
 		if (Buttons.IconButtonTooltip(lockIcon, lockHint))
 			camera.FixedPosition = isFixed ? null : pos;
 
@@ -173,7 +172,7 @@ public class CameraWindow : KtisisWindow {
 	}
 
 	private void DrawRelativeOffset(EditorCamera camera) {
-		this.DrawIconAlign(FontAwesomeIcon.Plus, out var spacing, this._ctx.Locale.Translate("camera_edit.offset.from_base"));
+		this.DrawIconAlign(FontAwesomeIcon.Plus, out var spacing, this.Context.Locale.Translate("camera_edit.offset.from_base"));
 		ImGui.SameLine(0, spacing);
 		this._relativePos.DrawPosition(ref camera.RelativeOffset, TransformFlags);
 	}
@@ -185,18 +184,36 @@ public class CameraWindow : KtisisWindow {
 		if (ptr == null) return;
 
 		// Camera angle
-		var angleHint = this._ctx.Locale.Translate("camera_edit.angle");
+		var angleHint = this.Context.Locale.Translate("camera_edit.angle");
 		this.DrawIconAlign(FontAwesomeIcon.ArrowsSpin, out var spacing, angleHint);
 		ImGui.SameLine(0, spacing);
 		ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
 
-		var angleDeg = ptr->Angle * MathHelpers.Rad2Deg;
-		if (ImGui.DragFloat2("##CameraAngle", ref angleDeg, 0.25f))
-			ptr->Angle = angleDeg * MathHelpers.Deg2Rad;
+		// var angleDeg = ptr->Angle * MathHelpers.Rad2Deg;
+		// if (ImGui.DragFloat2("##CameraAngle", ref angleDeg, 0.25f))
+		// 	ptr->Angle = angleDeg * MathHelpers.Deg2Rad;
+		var azEl = new Vector2(ptr->DirH, ptr->DirV);
+		if (ImGui.DragFloat2("##CameraAzEl", ref azEl, 0.01f)) {
+			ptr->DirH = azEl.X;
+			ptr->DirV = azEl.Y;
+		}
+		ImGui.Spacing();
+		var adjustedDelta = new Vector2(ptr->InputDeltaHAdjusted, ptr->InputDeltaVAdjusted);
+		if (ImGui.DragFloat2("##CameraAzElDeltaAdjusted", ref adjustedDelta, 0.01f)) {
+			// ptr->InputDeltaH = ptr->DirH - azEl.X;
+			// ptr->InputDeltaV = ptr->DirV - azEl.Y;
+		}
+		ImGui.Spacing();
+		var delta = new Vector2(ptr->InputDeltaH, ptr->InputDeltaV);
+		if (ImGui.DragFloat2("##CameraAzElDelta", ref delta, 0.01f)) {
+			// ptr->InputDeltaH = ptr->DirH - azEl.X;
+			// ptr->InputDeltaV = ptr->DirV - azEl.Y;
+		}
+
 
 		// Camera pan
 		
-		var panHint = this._ctx.Locale.Translate("camera_edit.pan");
+		var panHint = this.Context.Locale.Translate("camera_edit.pan");
 		this.DrawIconAlign(FontAwesomeIcon.ArrowsAlt, out spacing, panHint);
 		ImGui.SameLine(0, spacing);
 		ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
@@ -215,15 +232,15 @@ public class CameraWindow : KtisisWindow {
 		var ptr = camera.Camera;
 		if (ptr == null) return;
 
-		var rotateHint = this._ctx.Locale.Translate("camera_edit.sliders.rotation");
-		var zoomHint = this._ctx.Locale.Translate("camera_edit.sliders.zoom");
-		var distanceHint = this._ctx.Locale.Translate("camera_edit.sliders.distance");
+		var rotateHint = this.Context.Locale.Translate("camera_edit.sliders.rotation");
+		var zoomHint = this.Context.Locale.Translate("camera_edit.sliders.zoom");
+		var distanceHint = this.Context.Locale.Translate("camera_edit.sliders.distance");
 		using (ImRaii.Disabled(IsWork))
 			this.DrawSliderAngle("##CameraRotate", FontAwesomeIcon.CameraRotate, ref ptr->Rotation, -180.0f, 180.0f, 0.5f, rotateHint);
 		this.DrawSliderAngle("##CameraZoom", FontAwesomeIcon.VectorSquare, ref ptr->Zoom, -40.0f, 100.0f, 0.5f, zoomHint);
 		this.DrawSliderFloat("##CameraDistance", FontAwesomeIcon.Moon, ref ptr->Distance, ptr->DistanceMin, ptr->DistanceMax, 0.05f, distanceHint);
 		if (camera.IsOrthographic) {
-			var orthoHint = this._ctx.Locale.Translate("camera_edit.sliders.ortho_zoom");
+			var orthoHint = this.Context.Locale.Translate("camera_edit.sliders.ortho_zoom");
 			this.DrawSliderFloat("##OrthographicZoom", FontAwesomeIcon.LocationCrosshairs, ref camera.OrthographicZoom, 0.1f, 10.0f, 0.01f, orthoHint);
 		}
 	}

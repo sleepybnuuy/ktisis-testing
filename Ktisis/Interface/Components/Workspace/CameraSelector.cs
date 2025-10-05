@@ -32,7 +32,7 @@ public class CameraSelector {
 		
 		ImGui.SameLine(0, spacing);
 		if (Buttons.IconButtonTooltip(FontAwesomeIcon.Plus, "Create new camera"))
-			this.Cameras.Create();
+			this._ctx.Scene.Factory.BuildCamera().Add();
 
 		ImGui.SameLine(0, spacing);
 		if (Buttons.IconButtonTooltip(FontAwesomeIcon.PencilAlt, "Edit camera"))
