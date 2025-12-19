@@ -133,11 +133,14 @@ namespace Ktisis.Util
 		}
 
 		public static Vector4 VisibleCheckmarkColor() {
+			float h = 0.0f;
+			float s = 0.0f;
+			float v = 0.0f;
 			var currentCol = ImGui.GetStyle().Colors[(int)ImGuiCol.CheckMark];
-			ImGui.ColorConvertRGBtoHSV(currentCol.X, currentCol.Y, currentCol.Z, out var h, out var s, out var v);
+			ImGui.ColorConvertRGBtoHSV(currentCol.X, currentCol.Y, currentCol.Z, ref h, ref s, ref v);
 			s = 0.55f;
 			v = Math.Clamp(v * 1.25f, 0.0f, 1.0f);
-			ImGui.ColorConvertHSVtoRGB(h, s, v, out currentCol.X, out currentCol.Y, out currentCol.Z);
+			ImGui.ColorConvertHSVtoRGB(h, s, v, ref currentCol.X, ref currentCol.Y, ref currentCol.Z);
 			return currentCol;
 		}
 		

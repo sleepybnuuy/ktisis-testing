@@ -115,7 +115,7 @@ namespace Ktisis.Interface.Windows.Workspace {
 
 			if (gizmo != null) {
 				if (enabled) {
-					gizmo.ForceOp = OPERATION.TRANSLATE;
+					gizmo.ForceOp = ImGuizmoOperation.Translate;
 					result |= gizmo.Draw(ref gaze.Pos);
 				} else {
 					OverlayWindow.DeselectGizmo();

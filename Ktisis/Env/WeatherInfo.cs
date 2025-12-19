@@ -14,7 +14,7 @@ namespace Ktisis.Env {
 		}
 		
 		public WeatherInfo(Weather weather, ISharedImmediateTexture? icon) {
-			var name = weather.Name?.RawString;
+			var name = weather.Name?.String;
 			if (name.IsNullOrEmpty())
 				name = $"Weather #{weather.RowId}";
 			

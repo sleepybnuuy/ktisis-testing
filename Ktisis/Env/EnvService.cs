@@ -94,7 +94,7 @@ namespace Ktisis.Env {
 				if (id == 0) continue;
 				
 				var weather = weatherSheet.GetRow(id);
-				if (weather == null) continue;
+				// if (weather == null) continue;
 
 				var icon = Services.Textures.GetFromGameIcon((uint)weather.Icon);
 				var info = new WeatherInfo(weather, icon);

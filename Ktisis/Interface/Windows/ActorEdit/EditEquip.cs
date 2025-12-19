@@ -139,7 +139,7 @@ namespace Ktisis.Interface.Windows.ActorEdit {
 				Equipped[slot].SetEquip(equipObj, slot);
 
 			var item = Equipped[slot];
-			var icon = item.Icon?.GetWrapOrEmpty().ImGuiHandle ?? 0;
+			var icon = item.Icon?.GetWrapOrEmpty().Handle ?? 0;
 			ImGui.PushID((int)slot);
 			if (ImGui.ImageButton(icon, IconSize) && SlotSelect == null)
 				OpenSelector(slot);

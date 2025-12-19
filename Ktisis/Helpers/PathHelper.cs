@@ -5,7 +5,7 @@ using System.Text;
 using Dalamud.Logging;
 using Dalamud.Plugin;
 
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 
 namespace Ktisis.Helpers
@@ -24,9 +24,9 @@ namespace Ktisis.Helpers
 
 				return "Player";
 			}},
-			{"%CurrentWorld%", () => Services.ClientState.LocalPlayer?.CurrentWorld.GameData?.Name.ToString() ?? "Unknown"},
-			{"%HomeWorld%", () => Services.ClientState.LocalPlayer?.HomeWorld.GameData?.Name.ToString() ?? "Unknown" },
-			{"%Zone%", () => Services.DataManager.GetExcelSheet<TerritoryType>()?.GetRow(Services.ClientState.TerritoryType)?.PlaceName.Value?.Name.ToString() ?? "Unknown"},
+			{"%CurrentWorld%", () => Services.ClientState.LocalPlayer?.CurrentWorld.Value.Name.ToString() ?? "Unknown"},
+			{"%HomeWorld%", () => Services.ClientState.LocalPlayer?.HomeWorld.Value.Name.ToString() ?? "Unknown" },
+			{"%Zone%", () => Services.DataManager.GetExcelSheet<TerritoryType>()?.GetRow(Services.ClientState.TerritoryType).PlaceName.Value?.Name.ToString() ?? "Unknown"},
 		};
 		
 		internal static string Replace(ReadOnlySpan<char> path) {
