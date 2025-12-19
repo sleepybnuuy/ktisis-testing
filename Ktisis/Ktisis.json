@@ -6,11 +6,12 @@
 	"InternalName": "Ktisis",
 	"RepoUrl": "https://github.com/ktisis-tools/Ktisis",
 	"IconUrl": "https://github.com/ktisis-tools/Ktisis/raw/main/icon.png",
-	"AssemblyVersion": "0.2.29",
+	"AssemblyVersion": "0.2.30",
 	"ApplicableVersion": "any",
-	"DalamudApiLevel": 13,
+	"DalamudApiLevel": 14,
 	"Tags": [
 		"gpose",
 		"posing"
-	]
+	],
+    "Changelog": "Base functionality for Patch 7.4 & Dalamud v14. See the Information window for details on issues and what's next for v0.2."
 }

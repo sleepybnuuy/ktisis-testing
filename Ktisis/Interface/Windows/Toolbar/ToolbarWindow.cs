@@ -68,9 +68,11 @@ namespace Ktisis.Interface.Windows.Toolbar {
 			
 			ImGui.SameLine(0, ImGui.GetFontSize() * (PoseHooks.AnamPosingEnabled ? 2 : 1));
 			
+			ImGui.BeginDisabled(); // TODO: unfuck actor/equipment panels
 			if (GuiHelpers.IconButtonTooltip(IconsPool.UserEdit, "Edit current Actor"))
 				if (EditActor.Visible) EditActor.Hide();
 				else EditActor.Show();
+			ImGui.EndDisabled();
 
 			ImGui.SameLine();
 
@@ -115,8 +117,10 @@ namespace Ktisis.Interface.Windows.Toolbar {
 
 			ImGui.SameLine(0, ImGui.GetFontSize());
 			
+			ImGui.BeginDisabled();
 			if (GuiHelpers.IconButtonTooltip(IconsPool.Import, "Import and Export pose and appearance", ControlButtons.ButtonSize))
 				ImportExportWindow.Toggle();
+			ImGui.EndDisabled();
 			
 			ImGui.SameLine();
 			
