@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 using Newtonsoft.Json;
 
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 using Dalamud.Logging;
 

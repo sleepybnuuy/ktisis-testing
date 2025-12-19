@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 using Dalamud.Interface;
 using Dalamud.Interface.Textures;

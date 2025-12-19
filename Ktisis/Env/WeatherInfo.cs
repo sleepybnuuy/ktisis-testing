@@ -1,7 +1,7 @@
 ﻿using Dalamud.Interface.Textures;
 using Dalamud.Utility;
 
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 namespace Ktisis.Env {
 	public class WeatherInfo {

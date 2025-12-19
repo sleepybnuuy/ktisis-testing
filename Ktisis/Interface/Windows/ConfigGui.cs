@@ -4,7 +4,7 @@ using System.Text;
 using System.Numerics;
 using System.Collections.Generic;
 
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 using Newtonsoft.Json;
 

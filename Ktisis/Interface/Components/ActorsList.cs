@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using Dalamud.Interface;
 using DalamudGameObject = Dalamud.Game.ClientState.Objects.Types.IGameObject;

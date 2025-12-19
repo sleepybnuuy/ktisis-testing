@@ -1,6 +1,6 @@
 using Lumina.Data;
 using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 using Dalamud.Game.ClientState.Objects.Enums;
 

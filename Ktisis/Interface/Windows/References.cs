@@ -6,7 +6,7 @@ using System.Numerics;
 using Dalamud.Interface.Textures;
 using Dalamud.Interface.Textures.TextureWraps;
 
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 namespace Ktisis.Interface.Windows {
 	internal static class References {

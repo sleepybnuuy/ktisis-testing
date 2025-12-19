@@ -11,7 +11,7 @@ using Ktisis.Events;
 using Ktisis.Interop.Hooks;
 using Ktisis.Structs.Env;
 
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 namespace Ktisis.Env {
 	public static class EnvService {

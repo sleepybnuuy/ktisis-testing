@@ -2,9 +2,8 @@ using System.Numerics;
 
 using Dalamud.Interface;
 
-using ImGuiNET;
-
-using ImGuizmoNET;
+using Dalamud.Bindings.ImGui;
+using Dalamud.Bindings.ImGuizmo;
 
 using Ktisis.History;
 using Ktisis.Interface.Components;

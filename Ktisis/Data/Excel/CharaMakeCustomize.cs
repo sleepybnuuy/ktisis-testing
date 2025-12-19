@@ -1,6 +1,6 @@
 using Lumina.Data;
 using Lumina.Excel;
-using Lobby = Lumina.Excel.GeneratedSheets.Lobby;
+using Lumina.Excel.Sheets;
 
 namespace Ktisis.Data.Excel {
 	[Sheet("CharaMakeCustomize")]

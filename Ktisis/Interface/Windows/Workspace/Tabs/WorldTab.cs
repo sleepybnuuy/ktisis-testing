@@ -6,7 +6,7 @@ using System.Linq;
 
 using FFXIVClientStructs.FFXIV.Client.Graphics.Environment;
 
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 using Ktisis.Env;
 using Ktisis.Structs.Env;

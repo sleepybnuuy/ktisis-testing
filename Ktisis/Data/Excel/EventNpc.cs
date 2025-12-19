@@ -1,7 +1,7 @@
 ﻿using Lumina;
 using Lumina.Data;
 using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 using Ktisis.Data.Npc;
 using Ktisis.Structs.Actor;

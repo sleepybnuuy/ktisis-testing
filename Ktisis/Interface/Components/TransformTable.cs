@@ -2,8 +2,8 @@ using System;
 using System.Numerics;
 using System.Collections.Generic;
 
-using ImGuiNET;
-using ImGuizmoNET;
+using Dalamud.Bindings.ImGui;
+using Dalamud.Bindings.ImGuizmo;
 
 using Dalamud.Interface;
 
