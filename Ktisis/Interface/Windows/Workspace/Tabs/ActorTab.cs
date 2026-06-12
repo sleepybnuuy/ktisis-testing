@@ -30,14 +30,23 @@ namespace Ktisis.Interface.Windows.Workspace.Tabs {
 			ImGui.Spacing();
 
 			// Customize button
+			ImGui.BeginDisabled(); // TODO: unfuck actor/equipment panels
 			if (ImGuiComponents.IconButton(FontAwesomeIcon.UserEdit)) {
 				if (EditActor.Visible)
 					EditActor.Hide();
 				else
 					EditActor.Show();
 			}
+			ImGui.EndDisabled();
 			ImGui.SameLine();
 			ImGui.Text("Edit actor's appearance");
+			ImGui.SameLine();
+			Buttons.IconButtonTooltip(
+				FontAwesomeIcon.ExclamationCircle,
+				"Patch 7.4 has disrupted a number of Ktisis v0.2's functions, including Appearance/Equipment edits.\n" +
+				"You may be able to successfully edit your actor's appearance using alternative tools, like Glamourer or Anamnesis.\n" +
+				"Please try our testing version (v0.3) until this feature can be redeployed to the main branch!"
+			);
 
 			ImGui.Spacing();
 
@@ -115,6 +124,7 @@ namespace Ktisis.Interface.Windows.Workspace.Tabs {
 			var isUseless = mode == AnamCharaFile.SaveModes.None;
 			if (isUseless) ImGui.BeginDisabled();
 
+			ImGui.BeginDisabled();
 			if (ImGui.Button("Import##ImportExportChara")) {
 				KtisisGui.FileDialogManager.OpenFileDialog(
 					"Importing Character",
@@ -132,6 +142,7 @@ namespace Ktisis.Interface.Windows.Workspace.Tabs {
 					null
 				);
 			}
+			ImGui.EndDisabled();
 
 			ImGui.SameLine();
 
@@ -155,27 +166,24 @@ namespace Ktisis.Interface.Windows.Workspace.Tabs {
 			}
 			
 			ImGui.Spacing();
+			ImGui.BeginDisabled();
 			if (ImGui.Button("Import NPC"))
 				_npcImport.Open();
-
-			if (IpcChecker.IsGlamourerActive()) {
-				using var _ = ImRaii.PushColor(ImGuiCol.Button, 0);
-				
-				ImGui.SameLine(0, ImGui.GetStyle().ItemInnerSpacing.X);
-				
-                Buttons.IconButtonTooltip(
-					FontAwesomeIcon.ExclamationCircle,
-					"Glamourer heavily interferes with edits made by other tools.\n" +
-					"You may need to disable it for this to function correctly!"
-				);
-			}
 
 			if (isUseless) ImGui.EndDisabled();
 
 			ImGui.Spacing();
 			if (ImGui.Button("Revert Changes"))
 				ActorStateWatcher.RevertToOriginal(actor);
-			
+			ImGui.EndDisabled();
+
+			Buttons.IconButtonTooltip(
+				FontAwesomeIcon.ExclamationCircle,
+				"Patch 7.4 has disrupted a number of Ktisis v0.2's functions, including Chara/NPC importing.\n" +
+				"You may be able to successfully edit your actor's appearance using alternative tools, like Glamourer or Anamnesis.\n" +
+				"Please try our testing version (v0.3) until this feature can be redeployed to the main branch!"
+			);
+
 			_npcImport.Draw(mode);
 		}
 	}

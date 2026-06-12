@@ -12,5 +12,6 @@
 	"Tags": [
 		"gpose",
 		"posing"
-	]
+	],
+    "Changelog": "Base functionality for Patch 7.4 & Dalamud v14. See the Information window for details on issues and what's next for v0.2."
 }

@@ -30,10 +30,18 @@ namespace Ktisis.Interface.Windows {
 				ImGui.Text("Thanks for installing Ktisis!");
 
 				ImGui.Spacing();
-				ImGui.Text("The plugin is still in early alpha, so you may experience some issues or bugs.");
-				ImGui.Text("As such, it's recommended that you save your progress regularly.");
-				ImGui.Text("Please feel free to open threads for issues or suggestions in the Discord!");
+				ImGui.Spacing();
+				ImGui.Text("NOTE! Currently, our development is focused on the v0.3 Testing version.");
+				ImGui.TextWrapped("This means that some v0.2 features may be missing or invalid.");
+				ImGui.TextWrapped("Patch 7.4 has broken logic for editing and loading appearances/equipment on this version.");
+				ImGui.TextWrapped("Ktisis v0.3.15 has been fully updated for 7.4, and includes many new features & fixes.");
+				ImGui.TextWrapped("We anticipate fully releasing v0.3 early in the new year 2026, at which point v0.2 will become unavailable.");
+				ImGui.TextWrapped("You can install Testing through Dalamud today, and please reach out in our Discord for further support.");
+				// ImGui.Text("The plugin is still in early alpha, so you may experience some issues or bugs.");
+				// ImGui.Text("As such, it's recommended that you save your progress regularly.");
+				// ImGui.Text("Please feel free to open threads for issues or suggestions in the Discord!");
 
+				ImGui.Spacing();
 				ImGui.Spacing();
 				ImGui.Text("You may want to take some time to familiarise yourself with the settings.");
 				ImGui.Text("Once you're ready, get started by typing the '/ktisis' command and entering GPose.");
